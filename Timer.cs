@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using DistributedTimer.Hubs;
 using Microsoft.AspNetCore.SignalR;
 
@@ -15,17 +14,17 @@ namespace DistributedTimer
             this.timerHub = timerHub;
         }
 
-        internal async Task Execute()
+        internal void Execute()
         {
             if (endTime == default)
             {
-                await timerHub.Clients.All.SendAsync("UpdateTime", "waiting for timer to start");
+                timerHub.Clients.All.SendAsync("UpdateTime", "waiting for timer to start");
                 return;
             }
             
             var remainingTime = endTime - DateTime.Now;
             string result = remainingTime.TotalMilliseconds > 0 ? remainingTime.ToString(@"mm\:ss") : "00:00";
-            await timerHub.Clients.All.SendAsync("UpdateTime", result);
+            timerHub.Clients.All.SendAsync("UpdateTime", result);
         }
 
         internal void SetDuration(TimeSpan timeSpan)

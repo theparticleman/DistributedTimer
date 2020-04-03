@@ -8,72 +8,44 @@ using Microsoft.Extensions.Logging;
 
 namespace DistributedTimer
 {
-    public class TimerService : BackgroundService
+    public class TimerService : IHostedService
     {
+
         private readonly Timer timer;
+        private readonly ILogger<TimerService> logger;
+        private Task task;
+        private bool running = false;
 
-        // private Task task;
-        // private bool running = false;
-        // private IHubContext<TimerHub> hubContext;
-        // private readonly ILogger<TimerService> logger;
-        // private DateTime endTime;
-
-        // public TimerService(IHubContext<TimerHub> hubContext, ILogger<TimerService> logger)
-        // {
-        //     this.hubContext = hubContext;
-        //     this.logger = logger;
-        // }
-
-        // public Task StartAsync(CancellationToken cancellationToken)
-        // {
-        //     logger.LogInformation("Timer service started");
-        //     task = new Task(Run);
-        //     running = true;
-        //     task.Start();
-        //     return Task.CompletedTask;
-        // }
-
-        // internal void SetDuration(TimeSpan duration)
-        // {
-        //     endTime = DateTime.Now + duration;
-        // }
-
-        // public Task StopAsync(CancellationToken cancellationToken)
-        // {
-        //     logger.LogInformation("Timer service stopped");
-        //     running = false;
-        //     return Task.CompletedTask;
-        // }
-
-        // private void Run()
-        // {
-        //     while (running)
-        //     {
-        //         try
-        //         {
-        //             var remainingTime = endTime - DateTime.Now;
-        //             hubContext.Clients.All.SendAsync("UpdateTime", remainingTime.ToString(@"mm\:ss"));
-        //             Thread.Sleep(100);
-        //         }
-        //         catch (Exception ex)
-        //         {
-        //             logger.LogError("Exception thrown in timer service task\r\n" + ex);
-        //         }
-        //     }
-        //     logger.LogInformation("Exiting timer service task");
-        // }
-
-        public TimerService(Timer timer)
+        public TimerService(Timer timer, ILogger<TimerService> logger)
         {
             this.timer = timer;
+            this.logger = logger;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            logger.LogInformation("Timer service started");
+            task = new Task(Run);
+            running = true;
+            task.Start();
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            logger.LogInformation("Timer service stopped");
+            running = false;
+            return Task.CompletedTask;
+        }
+
+        private void Run()
+        {
+            while (running)
             {
-                await timer.Execute();
+               timer.Execute();
+               Thread.Sleep(100);
             }
+            logger.LogInformation("Exiting timer service task");
         }
     }
 }
