@@ -1,0 +1,14 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div>
+    How many minutes should the timer run for?
+    <form method="post">
+        <input type="number" min="1" max="1000" name="value" />
+        <input type="submit" />
+    </form>
+</div>
+
