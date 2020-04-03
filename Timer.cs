@@ -34,6 +34,7 @@ namespace DistributedTimer
                 updateEvent.Message = result;
                 updateEvent.PauseEnabled = timer.IsRunning;
                 updateEvent.ResumeEnabled = !timer.IsRunning;
+                updateEvent.RestartEnabled = true;
             }
             timerHub.Clients.All.SendAsync("UpdateTime", updateEvent);
         }
@@ -46,6 +47,11 @@ namespace DistributedTimer
         internal void Pause()
         {
             timer.Stop();
+        }
+
+        internal void Restart()
+        {
+            timer.Restart();
         }
 
         internal void SetDuration(TimeSpan timeSpan)
@@ -61,5 +67,6 @@ namespace DistributedTimer
         public string Message { get; set; }
         public bool PauseEnabled { get; set; }
         public bool ResumeEnabled { get; set; }
+        public bool RestartEnabled { get; set; }
     }
 }

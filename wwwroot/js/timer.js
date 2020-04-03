@@ -8,6 +8,7 @@ connection.on("UpdateTime", function (user, message) {
     document.getElementById("timer").firstChild.nodeValue = user.message;
     document.getElementById("pause").disabled = !user.pauseEnabled;
     document.getElementById("resume").disabled = !user.resumeEnabled;
+    document.getElementById("restart").disabled = !user.restartEnabled;
 });
 
 connection.start().then(function () {
@@ -24,7 +25,7 @@ function pauseClicked()
 
 function restartClicked()
 {
-    console.log("restart clicked");
+    send("/timer/restart");
 }
 
 function resumeClicked()

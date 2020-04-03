@@ -25,5 +25,11 @@ namespace DistributedTimer.Controllers
         {
             timer.Resume();
         }
+
+        [Route("/timer/restart")]
+        public void Restart()
+        {
+            timer.Restart();
+        }
     }
 }
