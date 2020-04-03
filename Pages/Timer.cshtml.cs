@@ -10,11 +10,11 @@ namespace DistributedTimer.Pages
 {
     public class TimerModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<IndexModel> logger;
 
         public TimerModel(ILogger<IndexModel> logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
         public void OnGet()

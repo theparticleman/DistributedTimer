@@ -1,4 +1,21 @@
 ﻿.timer
 {
-  font-size: x-large;
+  font-size: 30vw;
+  text-align: center;
+}
+
+.timer-buttons
+{
+  display: flex;
+  justify-content: center;
+}
+
+.timer-buttons button
+{
+  margin-left: 4px;
+  margin-right: 4px;
+  width: 30%;
+  height: 10vh;
+  min-height: 20px;
+  min-width: 60px;
 }

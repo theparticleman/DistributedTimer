@@ -1,35 +1,65 @@
 using System;
+using System.Diagnostics;
 using DistributedTimer.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace DistributedTimer
 {
     public class Timer
     {
         private readonly IHubContext<TimerHub> timerHub;
-        private DateTime endTime;
+        private readonly ILogger<Timer> logger;
+        private Stopwatch timer;
+        private TimeSpan duration;
 
-        public Timer(IHubContext<TimerHub> timerHub)
+        public Timer(IHubContext<TimerHub> timerHub, ILogger<Timer> logger)
         {
             this.timerHub = timerHub;
+            this.logger = logger;
+            timer = new Stopwatch();
         }
 
         internal void Execute()
         {
-            if (endTime == default)
+            var updateEvent = new TimerEvent();
+            if (duration == default)
             {
-                timerHub.Clients.All.SendAsync("UpdateTime", "waiting for timer to start");
-                return;
+                updateEvent.Message = "waiting for timer to start";
             }
-            
-            var remainingTime = endTime - DateTime.Now;
-            string result = remainingTime.TotalMilliseconds > 0 ? remainingTime.ToString(@"mm\:ss") : "00:00";
-            timerHub.Clients.All.SendAsync("UpdateTime", result);
+            else
+            {
+                var remainingTime = duration - timer.Elapsed;
+                string result = remainingTime.TotalMilliseconds > 0 ? remainingTime.ToString(@"mm\:ss") : "00:00";
+                updateEvent.Message = result;
+                updateEvent.PauseEnabled = timer.IsRunning;
+                updateEvent.ResumeEnabled = !timer.IsRunning;
+            }
+            timerHub.Clients.All.SendAsync("UpdateTime", updateEvent);
+        }
+
+        internal void Resume()
+        {
+            timer.Start();
+        }
+
+        internal void Pause()
+        {
+            timer.Stop();
         }
 
         internal void SetDuration(TimeSpan timeSpan)
         {
-            endTime = DateTime.Now + timeSpan;
+            logger.LogInformation($"Got duration of {timeSpan}");
+            duration = timeSpan;
+            timer.Start();
         }
+    }
+
+    public class TimerEvent
+    {
+        public string Message { get; set; }
+        public bool PauseEnabled { get; set; }
+        public bool ResumeEnabled { get; set; }
     }
 }

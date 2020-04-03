@@ -55,6 +55,9 @@ namespace DistributedTimer
             {
                 endpoints.MapRazorPages();
                 endpoints.MapHub<TimerHub>("/timerhub");
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
         }
     }
