@@ -1,14 +1,20 @@
-﻿@page
+@page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
 <div>
-    How many minutes should the timer run for?
-    <form method="post">
-        <input type="number" min="1" max="1000" name="value" />
-        <input type="submit" />
-    </form>
+    <a class="configure-link" href="/configure">Configure timer</a>
+    <div class="timer-buttons">
+        <button disabled id="pause" onclick="pauseClicked()">Pause</button>
+        <button disabled id="restart" onclick="restartClicked()">Restart</button>
+        <button disabled id="resume" onclick="resumeClicked()">Resume</button>
+    </div>
+</div>
+<div class="timer" id="timer"">
+    05:00
 </div>
 
+<script src="/js/signalr/signalr.js"></script>
+<script src="~/js/timer.js"></script>

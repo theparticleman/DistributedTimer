@@ -18,6 +18,7 @@ namespace DistributedTimer
             this.timerHub = timerHub;
             this.logger = logger;
             timer = new Stopwatch();
+            duration = TimeSpan.FromMinutes(10);
         }
 
         internal void Execute()
