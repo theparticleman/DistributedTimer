@@ -40,7 +40,7 @@ namespace DistributedTimer
             while (running)
             {
                timer.Execute();
-               Thread.Sleep(100);
+               Thread.Sleep(500);
             }
             logger.LogInformation("Exiting timer service task");
         }
