@@ -13,6 +13,8 @@ namespace DistributedTimer
         private Stopwatch timer;
         private TimeSpan duration;
 
+        private bool timerFinished;
+
         public Timer(IHubContext<TimerHub> timerHub, ILogger<Timer> logger)
         {
             this.timerHub = timerHub;
@@ -36,6 +38,10 @@ namespace DistributedTimer
                 updateEvent.PauseEnabled = timer.IsRunning;
                 updateEvent.ResumeEnabled = !timer.IsRunning;
                 updateEvent.RestartEnabled = true;
+                if(remainingTime.TotalMilliseconds <= 0 && !timerFinished){
+                    timerFinished = true;
+                    timerHub.Clients.All.SendAsync("TimerElapsed", new {});
+                }
             }
             timerHub.Clients.All.SendAsync("UpdateTime", updateEvent);
         }
@@ -53,6 +59,7 @@ namespace DistributedTimer
         internal void Restart()
         {
             timer.Restart();
+            timerFinished = false;
         }
 
         internal void SetDuration(TimeSpan timeSpan)

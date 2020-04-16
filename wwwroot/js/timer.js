@@ -2,6 +2,10 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/timerhub").build();
 
+Notification.requestPermission().then(function(result) {
+    console.log(result);
+});
+
 
 connection.on("UpdateTime", function (user, message) {
     console.log("Received message " + user);
@@ -9,6 +13,13 @@ connection.on("UpdateTime", function (user, message) {
     document.getElementById("pause").disabled = !user.pauseEnabled;
     document.getElementById("resume").disabled = !user.resumeEnabled;
     document.getElementById("restart").disabled = !user.restartEnabled;
+});
+
+connection.on("TimerElapsed", function(){
+    console.log("Timer elapsed");
+    if(Notification.permission === "granted") {
+        new Notification("Next mobber!");
+    }
 });
 
 connection.start().then(function () {
