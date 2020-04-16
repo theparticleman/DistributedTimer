@@ -18,7 +18,7 @@ connection.on("UpdateTime", function (user, message) {
 connection.on("TimerElapsed", function(){
     console.log("Timer elapsed");
     if(Notification.permission === "granted") {
-        new Notification("Next mobber!");
+        new Notification("Next mobber!", { tag: window.location, renotify: true });
     }
 });
 
