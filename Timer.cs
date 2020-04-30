@@ -38,9 +38,10 @@ namespace DistributedTimer
                 updateEvent.PauseEnabled = timer.IsRunning;
                 updateEvent.ResumeEnabled = !timer.IsRunning;
                 updateEvent.RestartEnabled = true;
-                if(remainingTime.TotalMilliseconds <= 0 && !timerFinished){
+                if (remainingTime.TotalMilliseconds <= 0 && !timerFinished)
+                {
                     timerFinished = true;
-                    timerHub.Clients.All.SendAsync("TimerElapsed", new {});
+                    timerHub.Clients.All.SendAsync("TimerElapsed", new { });
                 }
             }
             timerHub.Clients.All.SendAsync("UpdateTime", updateEvent);
